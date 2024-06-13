@@ -13,12 +13,13 @@ const useUpdate = (updateUrl) => {
     //functon to update data
     try {
       setLoading(true);
+      // //console.log(`-----> ${updateUrl}?${id}`);
       const res = await axios.put(`${updateUrl}?${id}`, updateData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      console.log(res);
+      //console.log(res);
       if (res.status === 200) {
         toast.success(res?.data?.message || "Data updated Successfully");
         navigate(redirectUrl);

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
-import { Link, useNavigate } from "react-router-dom";
-import swal from "sweetalert";
-import axios from "axios";
-import { useDeleteOne } from "../../hooks/useDeleteOne";
+import { Link } from "react-router-dom";
+// import swal from "sweetalert";
+// import axios from "axios";
+import { useDelete } from "../../hooks/useDelete";
 import { useAdd } from "../../hooks/useAdd";
 import Popup from "reactjs-popup";
 import ImageViewer from "../../components/ImageViewer";
 import Home from "../../Home";
 
 function HomeSlider() {
-  const HomeUrl = "/home-slider";
-  const navigate = useNavigate();
+  // const HomeUrl = "/home-slider";
+  // const navigate = useNavigate();
   // State to store filter parameters
   const [params, setParams] = useState({
     title: "",
@@ -23,7 +23,7 @@ function HomeSlider() {
 
   // Handle changes in filter inputs
   const handleChange = (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     const { name, value, type, files } = e.target;
     setParams({
       ...params,
@@ -31,62 +31,30 @@ function HomeSlider() {
     });
   };
   // add the home slider data
-  const [addData] = useAdd(
-    `/advertise/create-advetise`
-  );
+  const [addData] = useAdd(`/advertise/create-advetise`);
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData();
     formData.append("image", params.bannerUrl);
     event.preventDefault();
-    addData(params, HomeUrl);
+    addData(params, "", setReload);
   };
 
-  console.log(params);
+  //console.log(params);
 
-  const { Delete } = useDeleteOne(
-    `/advertise/delete-advertise?adId=`
-  );
+  const [Delete] = useDelete(`/advertise/delete-advertise?adId=`);
   // Handle deletion of a slider item
   const handleDelete = async (e) => {
-    console.log(e.target.id);
-    // Delete(e.target.id, HomeUrl);
-
-    try {
-      const res = await axios.delete(
-        `/advertise/delete-advertise?adId=${e.target.id}`
-      );
-
-      if (res.status === 200) {
-        swal({
-          title: "Are you sure?",
-          text: "you want to delete this !",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-        });
-
-        navigate(HomeUrl);
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      }
-    } catch (error) {
-      swal({
-        icon: "error",
-        title: "Oops...",
-        text: "An error occurred while deleting the data",
-      });
-    }
+    // //console.log(e.target.id);
+    Delete(e.target.id, setReload);
   };
 
   // Fetch category data using a custom hook (useFetch)
-  const [data, error, loading] = useFetch(
+  const [data, error, loading, setReload] = useFetch(
     "/advertise/advertise-list",
     params
   );
-  console.log(data);
+  //console.log(data);
   return (
     <>
       <Home>
@@ -107,7 +75,7 @@ function HomeSlider() {
                 {/* Display error message if there's an error */}
                 {error && <h1 className="text-white">{error.message}</h1>}
                 {/* Display Category data if available */}
-                {!data?.data == [] && (
+                {data?.data?.length !== 0 && (
                   <div className="table-responsive Ttable   overflow-y-auto Table-overflow">
                     <table className=" table-striped w-[100%]">
                       <thead>
@@ -123,7 +91,7 @@ function HomeSlider() {
                       </thead>
                       <tbody className="table-group-divider">
                         {/* Map through trainers data and display in table rows */}
-                        {data.data.map((item) => (
+                        {data?.data?.map((item) => (
                           <tr key={item.id} className="Tbody">
                             <td>{item.title}</td>
                             <td>
@@ -150,7 +118,7 @@ function HomeSlider() {
                             </td>
                             <td>{item.position}</td>
                             <td>
-                              {item.status === 1 ? "Active " : "Inactive"}
+                              {item.status === "1" ? "Active " : "Inactive"}
                             </td>
                             <td>{item.sequence}</td>
 
@@ -224,7 +192,7 @@ function HomeSlider() {
                           id="active"
                           name="status"
                           value={1}
-                          checked={params?.status == 1}
+                          checked={params?.status === 1}
                           onChange={handleChange}
                         />
                         Active
@@ -237,7 +205,7 @@ function HomeSlider() {
                           value={0}
                           name="status"
                           onChange={handleChange}
-                          checked={params?.status == 0}
+                          checked={params?.status === 0}
                         />
                         Inactive
                       </div>

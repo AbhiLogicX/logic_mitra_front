@@ -18,13 +18,13 @@ import Home from "../../Home";
 function ViewTrainerInfo() {
   const { id } = useParams();
   const [data, error, loading] = useFetch(`/user/details?userID=${id}`, id);
-  console.log(data);
+  // //console.log(data);
 
   const [CTR, setCTR] = useState("courses");
 
-  console.log(CTR);
+  // //console.log(CTR);
 
-  console.log(data?.data?.sgender.charAt(0).toLowerCase());
+  // //console.log(data?.data?.sgender.charAt(0).toLowerCase());
 
   //* fetch the city list
   const [CityList, error3, loading3] = useFetch("/address/city-list", true);
@@ -50,7 +50,7 @@ function ViewTrainerInfo() {
                         ? "https://img.freepik.com/free-photo/perspective-home-desk-white-frame_1258-255.jpg"
                         : `https://api.logicmitra.com:8086/uploads/user/${data?.data?.sbackgroundUrl}`
                     }
-                    alt="image"
+                    alt="logo"
                     className={`w-[100%] h-44 object-cover  border-b-2 border-yellow-500
                 `}
                   />
@@ -64,7 +64,7 @@ function ViewTrainerInfo() {
                             ? "https://img.freepik.com/premium-vector/account-icon-user-icon-vector-graphics_292645-552.jpg"
                             : `https://api.logicmitra.com:8086/uploads/user/${data?.data?.sprofilepicUrl}`
                         }
-                        alt="image"
+                        alt="logo"
                         className="w-100 h-100  rounded-full image1 object-cover"
                       />
                     </div>

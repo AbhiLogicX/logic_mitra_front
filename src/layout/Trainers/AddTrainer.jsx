@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import { useAdd } from "../../hooks/useAdd";
-import { useNavigate } from "react-router-dom";
-import swal from "sweetalert";
+// import { useNavigate } from "react-router-dom";
+// import swal from "sweetalert";
 import { useFetch } from "../../hooks/useFetch";
 import axios from "axios";
 import Home from "../../Home";
 
 function AddTrainer() {
+  const [states, setStates] = useState([]);
+  const [fetchedData, setFetchedData] = useState(false);
+  // const [fetchedDataCity, setFetchedDataCity] = useState(false)
+  const [citiesData, setCitiesData] = useState();
+
   const TrainerUrl = "/trainers";
   const initialFormData = {
     userType: "trainer",
@@ -56,6 +61,26 @@ function AddTrainer() {
     }
   };
 
+  const handleChangeState = async (e) => {
+    const { name, value, type, files } = e.target;
+    formData.sstate = value;
+
+    await axios
+      .post(`https://countriesnow.space/api/v0.1/countries/state/cities`, {
+        country: "India",
+        state: value,
+      })
+      .then((res) => {
+        // //console.log("res---->", res);
+        if (res.status === 200) {
+          setCitiesData(res.data.data);
+        }
+      })
+      .catch((err) => {
+        setCitiesData([]);
+      });
+  };
+
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
 
@@ -75,7 +100,7 @@ function AddTrainer() {
     addData(formData, TrainerUrl);
   };
 
-  console.log(formData);
+  // //console.log(formData);
 
   // fetching all country , state, and country data for showing on dropdown
 
@@ -95,32 +120,55 @@ function AddTrainer() {
           `/address/city-detail?cityID=${formData.scity}`
         );
         const data = res.data;
-        console.log(data?.data?.state);
+        // //console.log(data?.data?.state);
 
         const datastate = Statedata?.data?.filter(
           (elm) => elm.id === data?.data?.state
         );
-        console.log(datastate);
+        // //console.log(datastate);
         const UniquStatename = datastate.map((elm) => elm.title);
-        console.log(...UniquStatename);
+        // //console.log(...UniquStatename);
 
         setFormData((predata) => ({
           ...predata,
           sstate: UniquStatename.toString(),
         }));
 
-        console.log(datastate);
+        // //console.log(datastate);
       } catch (error) {
-        console.log(error);
+        // //console.log(error);
       }
     };
 
     fetchcitydata();
-  }, [formData.scity]);
+  }, [formData.scity, Statedata?.data]);
 
-  console.log(Countrydata, Statedata, Citydata);
+  useEffect(() => {
+    async function fetchStates() {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/states`, {
+          country: "india",
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setStates(res.data.data.states);
+            setFetchedData(true);
+          }
+        })
+        .catch((err) => {
+          setFetchedData(true);
+          setStates([]);
+        });
+    }
 
-  console.log(formData);
+    if (!fetchedData) {
+      fetchStates();
+    }
+  }, [fetchedData]);
+
+  // //console.log(Countrydata, Statedata, Citydata);
+
+  // //console.log(formData);
 
   return (
     <>
@@ -288,16 +336,16 @@ function AddTrainer() {
 
                   <select
                     className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2  py-[10px]"
-                    onChange={handleChange}
+                    onChange={handleChangeState}
                     name="sstate"
                     value={formData?.sstate}
                     required
                   >
                     <option> select state</option>
-                    {Statedata?.data?.map((elm) => {
+                    {states?.map((elm) => {
                       return (
                         <>
-                          <option value={elm.title}> {elm.title} </option>
+                          <option value={elm.name}> {elm.name} </option>
                         </>
                       );
                     })}
@@ -316,10 +364,10 @@ function AddTrainer() {
                     value={formData?.scity}
                   >
                     <option> select city</option>
-                    {Citydata?.data?.map((elm) => {
+                    {citiesData?.map((elm) => {
                       return (
                         <>
-                          <option value={elm.id}> {elm.title} </option>
+                          <option value={elm}> {elm} </option>
                         </>
                       );
                     })}
@@ -346,7 +394,6 @@ function AddTrainer() {
                   </label>
                   <input
                     type="number"
-                    max={6}
                     required
                     className="form-control input focus-within:bg-none focus:border-none outline-none w-[100%] text-white "
                     value={formData.spincode}

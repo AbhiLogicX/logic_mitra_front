@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Home from "../../Home";
+// import Home from "../../Home";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { Email } from "@mui/icons-material";
+// import { Email } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 
@@ -14,6 +14,7 @@ const Login = () => {
   const [spassword, setPassword] = useState("");
   const [userType, setTrainer] = useState("trainer");
   const [loading, setLoading] = useState(false);
+
   const handleLogin = async () => {
     setLoading(true);
     if (!semail || !spassword) {
@@ -31,7 +32,7 @@ const Login = () => {
         }
       );
       if (data?.response === "success") {
-        console.log("data at form", data);
+        //console.log("data at form", data);
         setAuth({ ...data.data });
         toast.success("Login Successfull");
         localStorage.setItem("admin", JSON.stringify(data?.data));
@@ -41,7 +42,7 @@ const Login = () => {
         }, 1000);
       }
     } catch (error) {
-      // console.log(error);
+      // //console.log(error);
       toast.error("Something Went Wrong!!");
       setLoading(false);
     }

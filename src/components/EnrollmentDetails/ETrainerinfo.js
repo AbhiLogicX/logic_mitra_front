@@ -8,13 +8,12 @@ import { BsChatRightQuote } from "react-icons/bs";
 import { PiCertificateFill } from "react-icons/pi";
 import { FaDownload, FaRegEdit, FaShareAlt } from "react-icons/fa";
 const ETrainerInfo = ({ trainer }) => {
-  console.log(trainer);
+  //console.log(trainer);
   const [show, setshow] = useState(false);
   const showmoreclick = () => {
     setshow(!show);
   };
 
-  
   return (
     <>
       <section className="text-white">
@@ -40,7 +39,8 @@ const ETrainerInfo = ({ trainer }) => {
               <div className="w-40 h-40 ">
                 <img
                   src={
-                    trainer?.trainerid?.sprofilepicUrl === "" || !trainer?.trainerid?.sprofilepicUrl
+                    trainer?.trainerid?.sprofilepicUrl === "" ||
+                    !trainer?.trainerid?.sprofilepicUrl
                       ? "https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg"
                       : `https://api.logicmitra.com:8086/uploads/students/${trainer?.trainerid?.sprofilepicUrl}`
                   }

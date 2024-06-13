@@ -3,7 +3,7 @@ import axios from "axios";
 import { useDebounce } from "./useDebounce";
 import swal from "sweetalert";
 const useFetch = (url, params) => {
-  // console.log("query fired")
+  // //console.log("query fired")
   const [reload, setReload] = useState(false);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,8 @@ const useFetch = (url, params) => {
   const debouncedParams = useDebounce(params, 1000); //using debounce to add delay in api calls
   useEffect(() => {
     async function fetchData() {
-      console.log("url", url);
+      // //console.log("url", url);
+      setLoading(true);
       await axios
         .get(url, params)
         .then((res) => {

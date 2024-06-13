@@ -12,11 +12,15 @@ function EditStudentInfo() {
   // Extracts student ID from URL parameters
   const { id } = useParams();
   // Fetch student data using a custom hook (useFetch)
+  const [states, setStates] = useState([]);
+  const [fetchedData, setFetchedData] = useState(false);
+  // const [fetchedDataCity, setFetchedDataCity] = useState(false)
 
   const [Fetch, data, loading, error] = useFetchOnce(`/user/details?`, true);
-  console.log(data);
+  // //console.log(data);
   // State to store form parameters
   const [params, setParams] = useState();
+  const [citiesData, setCitiesData] = useState([]);
 
   // Updates params when data is fetched
   useEffect(() => {
@@ -46,13 +50,30 @@ function EditStudentInfo() {
     const formdata = new FormData();
     formdata.append("image", params.sprofilepicUrl);
     formdata.append("banner-image", params.sbackgroundUrl);
-    console.log(e);
+    // //console.log(e);
     e.preventDefault();
     // Calls the handleUpdate function from the custom hook
     handleUpdate(`userId=${e.target.id}`, params, StudentUrl);
   };
 
-  console.log(params);
+  const handleChangeState = async (e) => {
+    const { name, value, type, files } = e.target;
+    params.sstate = value;
+    // //console.log("change");
+
+    await axios
+      .post(`https://countriesnow.space/api/v0.1/countries/state/cities`, {
+        country: "India",
+        state: value,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setCitiesData(res.data.data);
+        }
+      });
+  };
+
+  // //console.log(params);
 
   // fetching all country , state, and country data for showing on dropdown
 
@@ -67,35 +88,72 @@ function EditStudentInfo() {
 
   // choose the city after state and coutnry clicked
 
+  // useEffect(() => {
+  //   const fetchcitydata = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         `/address/city-detail?cityID=${params?.scity}`
+  //       );
+  //       const data = res.data;
+  //       //console.log(data?.data?.state);
+
+  //       const datastate = Statedata?.data?.filter(
+  //         (elm) => elm.id === data?.data?.state
+  //       );
+  //       //console.log(datastate);
+  //       const UniquStatename = datastate.map((elm) => elm.title);
+  //       //console.log(...UniquStatename);
+
+  //       setParams((predata) => ({
+  //         ...predata,
+  //         sstate: UniquStatename.toString(),
+  //       }));
+
+  //       //console.log(datastate);
+  //     } catch (error) {
+  //       //console.log(error);
+  //     }
+  //   };
+
+  //   fetchcitydata();
+  // }, [params?.scity]);
+
+  // //console.log("params.sstate --->", params.sstate);
+
   useEffect(() => {
-    const fetchcitydata = async () => {
-      try {
-        const res = await axios.get(
-          `/address/city-detail?cityID=${params?.scity}`
-        );
-        const data = res.data;
-        console.log(data?.data?.state);
+    async function fetchStates() {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/states`, {
+          country: "india",
+        })
+        .then((res) => {
+          setStates(res.data.data.states);
+          setFetchedData(true);
+        });
+    }
+    async function setCityList(city) {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/state/cities`, {
+          country: "India",
+          state: city,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setCitiesData(res.data.data);
+          } else {
+            setCitiesData([]);
+          }
+        })
+        .catch((err) => {
+          setCitiesData([]);
+        });
+    }
 
-        const datastate = Statedata?.data?.filter(
-          (elm) => elm.id === data?.data?.state
-        );
-        console.log(datastate);
-        const UniquStatename = datastate.map((elm) => elm.title);
-        console.log(...UniquStatename);
-
-        setParams((predata) => ({
-          ...predata,
-          sstate: UniquStatename.toString(),
-        }));
-
-        console.log(datastate);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchcitydata();
-  }, [params?.scity]);
+    if (!fetchedData && !loading) {
+      fetchStates();
+    }
+    setCityList(params?.sstate);
+  }, [fetchedData, loading]);
 
   return (
     <>
@@ -270,16 +328,16 @@ function EditStudentInfo() {
 
                     <select
                       className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2  py-[10px]"
-                      onChange={handleChange}
+                      onChange={handleChangeState}
                       name="sstate"
                       value={params?.sstate}
                       required
                     >
                       <optoin>Select state</optoin>
-                      {Statedata?.data?.map((elm) => {
+                      {states?.map((elm) => {
                         return (
                           <>
-                            <option value={elm.title}> {elm.title} </option>
+                            <option value={elm.name}> {elm.name} </option>
                           </>
                         );
                       })}
@@ -299,14 +357,12 @@ function EditStudentInfo() {
                       required
                     >
                       <option> Select city</option>
-                      {Citydata?.data?.map((elm) => {
-                        console.log(elm.id);
-                        return (
-                          <>
-                            <option value={`${elm.id}`}> {elm.title} </option>
-                          </>
-                        );
-                      })}
+                      {citiesData?.map((elm) => (
+                        <>
+                          {/* <option value={elm.name}> {elm.name} </option> */}
+                          <option value={elm}> {elm} </option>
+                        </>
+                      ))}
                     </select>
                   </div>
 

@@ -14,7 +14,7 @@ const useDeleteOne = (url) => {
         buttons: true,
         dangerMode: true,
       }).then(async (willDelete) => {
-        console.log("willDelete", willDelete);
+        //console.log("willDelete", willDelete);
         if (willDelete) {
           await axios.delete(`${url}${id}`).then((res) => {
             if (res.status === 200) {

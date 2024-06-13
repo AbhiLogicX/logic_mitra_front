@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import swal from "sweetalert";
+import { useParams, Link } from "react-router-dom";
+// import swal from "sweetalert";
 
 import useUpdate from "../../hooks/useUpdate";
 import { useFetch } from "../../hooks/useFetch";
@@ -21,7 +21,7 @@ function EditHomeSlider() {
   // State to store form parameters
   const [params, setParams] = useState({});
 
-  console.log(params);
+  //console.log(params);
   // Updates params when data is fetched
   useEffect(() => {
     if (data) {
@@ -40,17 +40,15 @@ function EditHomeSlider() {
     }));
   };
 
-  console.log(params);
+  //console.log(params);
 
   // Uses a custom hook (useUpdate) for handling the update API call
-  const [handleUpdate] = useUpdate(
-    `https://api.logicmitra.com:8086/api/advertise/update-advertise`
-  );
+  const [handleUpdate] = useUpdate(`/advertise/update-advertise`);
 
-  console.log(params);
+  //console.log(params);
   // Handles form submission
   const handleSubmit = (e) => {
-    console.log(e);
+    //console.log(e);
     const formData = new FormData();
     formData.append("image", params.bannerUrl);
 
@@ -166,7 +164,7 @@ function EditHomeSlider() {
                             id="active"
                             name="status"
                             value={1}
-                            checked={params?.status == 1}
+                            checked={params?.status === 1}
                             onChange={handleChange}
                           />
                           Active
@@ -175,7 +173,7 @@ function EditHomeSlider() {
                             id="active"
                             name="status"
                             value={0}
-                            checked={params?.status == 0}
+                            checked={params?.status === 0}
                             onChange={handleChange}
                           />
                           Inactive
@@ -186,7 +184,7 @@ function EditHomeSlider() {
                     <div className="h-44 md:h-[100%]  w-[100%] md:w-[20%] border-2 rounded-md">
                       <img
                         src={`https://api.logicmitra.com/uploads/advertiseBanner/${params?.bannerUrl}`}
-                        alt="image"
+                        alt="logo"
                         className="w-[100%] h-[100%]  object-cover"
                       />
                     </div>
@@ -219,12 +217,14 @@ function EditHomeSlider() {
                 >
                   Update
                 </button>
-                <button
-                  type="reset"
-                  className="Cancel-btn   rounded-md sm:px-4 px-5 py-2"
-                >
-                  Cancel
-                </button>
+                <Link to={"/home-slider"}>
+                  <button
+                    type="reset"
+                    className="Cancel-btn   rounded-md sm:px-4 px-5 py-2"
+                  >
+                    Cancel
+                  </button>
+                </Link>
               </div>
             </form>
           </div>

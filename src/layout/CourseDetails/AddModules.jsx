@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAdd } from "../../hooks/useAdd";
-import swal from "sweetalert";
-import { UseCourseContext } from "../../context/CourseContext";
-import { UsesubcategoriesContext } from "../../context/SubcatContext";
-import { useDeleteOne } from "../../hooks/useDeleteOne";
+import { Link, useParams } from "react-router-dom";
+// import { useAdd } from "../../hooks/useAdd";
+// import swal from "sweetalert";
+// import { UseCourseContext } from "../../context/CourseContext";
+// import { UsesubcategoriesContext } from "../../context/SubcatContext";
+import { useDelete } from "../../hooks/useDelete";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Home from "../../Home";
@@ -17,7 +17,7 @@ const AddModules = () => {
 
   const CourseId = id;
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const Url = window.location.href;
   const ModuleUrl = Url.substring(Url.indexOf("/courses/"));
@@ -38,19 +38,38 @@ const AddModules = () => {
     sequence: "",
   });
 
-  console.log(params);
+  //console.log(params);
+
+  //fetch module data from couses
+  const [data, error, loading, setReload] = useFetch(
+    `/course-detail/course-modules?courseId=${CourseId}`,
+    CourseId
+  );
 
   //*add module data
 
-  const [addData] = useAdd(`/course-detail/create-module`);
+  // const [addData] = useAdd(`/course-detail/create-module`);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    addData(params, ModuleUrl);
+    // addData(params, ModuleUrl);
+    await axios
+      .post(`/course-detail/create-module`, params)
+      .then((res) => {
+        if (res.status === 200) {
+          toast.success(res?.data?.message || "Data Created successfully");
+          setReload(false);
+        } else {
+          toast.error(res?.data?.message || "Failed Data");
+        }
+      })
+      .catch((err) => {
+        toast.error(err?.data?.message || "Failed Data");
+      });
   };
 
   const handleChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { name, value } = event.target;
     setparams({
       ...params,
@@ -58,18 +77,12 @@ const AddModules = () => {
     });
   };
 
-  const { Delete } = useDeleteOne(`/course-detail/delete-module?moduleId=`);
+  const [Delete] = useDelete(`/course-detail/delete-module?moduleId=`);
   const handleDelete = async (e) => {
-    Delete(e.target.id, ModuleUrl);
+    Delete(e.target.id, setReload);
   };
 
-  //fetch module data from couses
-  const [data, error, loading] = useFetch(
-    `/course-detail/course-modules?courseId=${CourseId}`,
-    CourseId
-  );
-
-  console.log(data);
+  //console.log(data);
 
   return (
     <Home>
@@ -215,7 +228,7 @@ const AddModules = () => {
                         id="active"
                         name="status"
                         value={1}
-                        checked={params?.status == 1}
+                        checked={params?.status === 1}
                         onChange={handleChange}
                       />
                       Active
@@ -228,7 +241,7 @@ const AddModules = () => {
                         value={0}
                         name="status"
                         onChange={handleChange}
-                        checked={params?.status == 0}
+                        checked={params?.status === 0}
                       />
                       Inactive
                     </div>

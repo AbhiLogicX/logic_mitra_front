@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 // import { useAuth } from "../context/auth";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { Outlet } from "react-router-dom";
@@ -8,21 +9,35 @@ import { useAuth } from "../auth";
 import CircleLoader from "../../components/CircleLoader";
 
 const AdminRoute = () => {
+  const navigate = useNavigate();
   const [ok, setOk] = useState(false);
   const [auth, setAuth] = useAuth();
-  console.log("auth at admin route", auth);
+
   useEffect(() => {
     const authCheck = async () => {
-      const res = await axios.get("http://localhost:8000/api/user/admin-auth");
-      if (res.status === 200) {
-        console.log("admin res", res);
-        setOk(true);
-      } else {
-        console.log("admin res err", res);
-        setOk(false);
-      }
+      await axios
+        .get("http://localhost:8000/api/user/admin-auth")
+        .then((res) => {
+          // console.log("admin res ----> ", res);
+          if (res.data.response === "success" && res.status === 200) {
+            setOk(true);
+          } else {
+            //console.log("admin res err", res);
+            setOk(false);
+            navigate("/login");
+          }
+        })
+        .catch((err) => {
+          setOk(false);
+          navigate("/login");
+        });
     };
-    if (auth.user !== null) authCheck();
+    if (auth.user !== null && auth.token !== "") {
+      authCheck();
+    } else {
+      localStorage.removeItem("admin");
+      navigate("/login");
+    }
   }, [auth]);
   return ok ? <Outlet /> : <CircleLoader path="" />;
 };

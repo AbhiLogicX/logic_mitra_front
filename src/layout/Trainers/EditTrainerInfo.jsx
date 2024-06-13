@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import useUpdate from "../../hooks/useUpdate";
 import swal from "sweetalert";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useFetchOnce } from "../../hooks/useFetchOnce";
 import axios from "axios";
 import Home from "../../Home";
@@ -12,11 +12,11 @@ function EditTrainerInfo() {
   // Extracts student ID from URL parameters
   const { id } = useParams();
 
-  console.log(id);
+  // //console.log(id);
   // Fetch student data using a custom hook (useFetch)
 
   const [Fetch, data, loading, error] = useFetchOnce(`/user/details?`, true);
-  console.log(data);
+  // //console.log(data);
   // State to store form parameters
 
   // Updates params when data is fetched
@@ -26,7 +26,11 @@ function EditTrainerInfo() {
 
   // State to store form parameters
   const [params, setParams] = useState({});
-  console.log(params);
+  // //console.log(params);
+
+  const [states, setStates] = useState([]);
+  const [fetchedData, setFetchedData] = useState(false);
+  const [citiesData, setCitiesData] = useState([]);
 
   // Updates params when data is fetched
   useEffect(() => {
@@ -45,6 +49,27 @@ function EditTrainerInfo() {
     }));
   };
 
+  // //console.log("------>", params?.sstate);
+
+  const handleChangeState = async (e) => {
+    const { name, value, type, files } = e.target;
+    params.sstate = value;
+    // //console.log("change");
+
+    await axios
+      .post(`https://countriesnow.space/api/v0.1/countries/state/cities`, {
+        country: "India",
+        state: value,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setCitiesData(res.data.data);
+        }
+      })
+      .catch((err) => {
+        setCitiesData([]);
+      });
+  };
   // Uses a custom hook (useUpdate) for handling the update API call
   const [handleUpdate] = useUpdate(`/user/update-user`);
 
@@ -57,7 +82,7 @@ function EditTrainerInfo() {
     // Calls the handleUpdate function from the custom hook
     handleUpdate(`userId=${e.target.id}`, params, TrainerUrl);
   };
-  console.log(params);
+  // //console.log(params);
 
   const [Citydata, error1, loading1] = useFetch("/address/city-list", true);
 
@@ -68,35 +93,71 @@ function EditTrainerInfo() {
 
   const [Statedata, error3, loading3] = useFetch("/address/state-list", true);
 
+  // useEffect(() => {
+  //   const fetchcitydata = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         `/address/city-detail?cityID=${params?.scity}`
+  //       );
+  //       const data = res.data;
+  //       //console.log(data?.data?.state);
+
+  //       const datastate = Statedata?.data?.filter(
+  //         (elm) => elm.id === data?.data?.state
+  //       );
+  //       //console.log(datastate);
+  //       const UniquStatename = datastate.map((elm) => elm.title);
+  //       //console.log(...UniquStatename);
+
+  //       setParams((predata) => ({
+  //         ...predata,
+  //         sstate: UniquStatename.toString(),
+  //       }));
+
+  //       //console.log(datastate);
+  //     } catch (error) {
+  //       //console.log(error);
+  //     }
+  //   };
+
+  //   fetchcitydata();
+  // }, [params?.scity]);
+
   useEffect(() => {
-    const fetchcitydata = async () => {
-      try {
-        const res = await axios.get(
-          `/address/city-detail?cityID=${params?.scity}`
-        );
-        const data = res.data;
-        console.log(data?.data?.state);
+    async function fetchStates() {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/states`, {
+          country: "india",
+        })
+        .then((res) => {
+          // //console.log("res---->", res);
+          setStates(res.data.data.states);
+          setFetchedData(true);
+        });
+    }
+    async function setCityList(city) {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/state/cities`, {
+          country: "India",
+          state: city,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            setCitiesData(res.data.data);
+          } else {
+            setCitiesData([]);
+          }
+        })
+        .catch((err) => {
+          setCitiesData([]);
+        });
+    }
 
-        const datastate = Statedata?.data?.filter(
-          (elm) => elm.id === data?.data?.state
-        );
-        console.log(datastate);
-        const UniquStatename = datastate.map((elm) => elm.title);
-        console.log(...UniquStatename);
-
-        setParams((predata) => ({
-          ...predata,
-          sstate: UniquStatename.toString(),
-        }));
-
-        console.log(datastate);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchcitydata();
-  }, [params?.scity]);
+    if (!fetchedData && !loading) {
+      fetchStates();
+    }
+    setCityList(params?.sstate);
+  }, [fetchedData, loading]);
 
   return (
     <>
@@ -248,15 +309,15 @@ function EditTrainerInfo() {
                     <select
                       required
                       className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2  py-[10px]"
-                      onChange={handleChange}
+                      onChange={handleChangeState}
                       name="sstate"
                       value={params?.sstate}
                     >
                       <option> select state</option>
-                      {Statedata?.data?.map((elm) => {
+                      {states?.map((elm) => {
                         return (
                           <>
-                            <option value={elm.title}> {elm.title} </option>
+                            <option value={elm.name}> {elm.name} </option>
                           </>
                         );
                       })}
@@ -276,10 +337,10 @@ function EditTrainerInfo() {
                       value={params?.scity}
                     >
                       <option> select city</option>
-                      {Citydata?.data?.map((elm) => {
+                      {citiesData.map((elm) => {
                         return (
                           <>
-                            <option value={elm.id}> {elm.title} </option>
+                            <option value={elm}> {elm} </option>
                           </>
                         );
                       })}
@@ -457,12 +518,14 @@ function EditTrainerInfo() {
                 >
                   Update
                 </button>
-                <button
-                  type="reset"
-                  className=" py-2 Cancel-btn sm:px-4  px-5 rounded-md"
-                >
-                  Cancel
-                </button>
+                <Link to="/trainers">
+                  <button
+                    type="reset"
+                    className=" py-2 Cancel-btn sm:px-4  px-5 rounded-md"
+                  >
+                    Cancel
+                  </button>
+                </Link>
               </div>
             </form>
           </div>

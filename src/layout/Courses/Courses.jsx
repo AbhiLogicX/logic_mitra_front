@@ -3,7 +3,7 @@ import { useFetch } from "../../hooks/useFetch";
 import { Link, useNavigate } from "react-router-dom";
 import Card from "../../components/Card";
 import swal from "sweetalert";
-import { useDeleteOne } from "../../hooks/useDeleteOne";
+import { useDelete } from "../../hooks/useDelete";
 import { UseCourseContext } from "../../context/CourseContext";
 import { UsesubcategoriesContext } from "../../context/SubcatContext";
 import axios from "axios";
@@ -22,10 +22,10 @@ function Courses() {
   // Handle changes in filter inputs
   const handleChange = (e) => {
     setParams({ ...params, [e.target.name]: e.target.value });
-    // console.log(params);
+    // //console.log(params);
   };
 
-  const [data, error, loading] = useFetch(
+  const [data, error, loading, setReload] = useFetch(
     "/courses/all-course",
     true
   );
@@ -58,17 +58,15 @@ function Courses() {
   }, [data]);
 
   // delete the particular Courses
-  const { Delete } = useDeleteOne(
-    `/courses/delete-course?courseId=`
-  );
+  const [Delete] = useDelete(`/courses/delete-course?courseId=`);
 
   const handleDelete = async (e) => {
-    console.log("course id is", e.target.id);
+    //console.log("course id is", e.target.id);
 
-    Delete(e.target.id, CourseUrl);
+    Delete(e.target.id, setReload);
   };
 
-  console.log(data);
+  //console.log(data);
   return (
     <>
       <Home>

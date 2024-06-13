@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAdd } from "../../hooks/useAdd";
+// import { useAdd } from "../../hooks/useAdd";
 import { useFetch } from "../../hooks/useFetch";
-import swal from "sweetalert";
+// import swal from "sweetalert";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -14,7 +14,7 @@ function AddCourses() {
 
   const [data, error, loading] = useFetch("/categories/list", true);
 
-  console.log(data);
+  //console.log(data);
   const initialFormData = {
     cslug: "",
     ctitle: "",
@@ -40,11 +40,11 @@ function AddCourses() {
   const [formData, setFormData] = useState(initialFormData);
 
   // const [subCat , error1 , loading1]=useFetch( `https://api.logicmitra.com:8086/api/categories/sub-cat?catg=${formData?.ccategory}`)
-  // console.log(subCat);
+  // //console.log(subCat);
 
   const [subCat, setsubCat] = useState();
 
-  console.log(subCat);
+  //console.log(subCat);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -53,14 +53,14 @@ function AddCourses() {
           `/categories/sub-cat?catg=${formData?.ccategory}`
         );
         const data = res.data;
-        console.log(data);
+        //console.log(data);
         if (res.status === 200) {
           const data = res.data;
-          console.log(data?.data);
+          //console.log(data?.data);
           setsubCat(data?.data);
         }
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     };
 
@@ -68,7 +68,7 @@ function AddCourses() {
   }, [formData?.ccategory]);
 
   const [data2, error2, loading2] = useFetch(`/trainers/list`);
-  console.log(data2);
+  //console.log(data2);
 
   const handleChange = async (e) => {
     const { name, value, type, files } = e.target;
@@ -97,21 +97,24 @@ function AddCourses() {
         setTimeout(() => {
           navigate("/courses");
         }, 1000);
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
       } else {
-        toast.warn("error while creating course");
+        toast.warn("Course is not created");
       }
     } catch (error) {
-      console.error("Error occurred:", error);
-      toast.error("Something Went wrong!!");
+      // console.error(
+      //   "Error occurred:",
+      //   error?.AxiosError?.name?.response?.data?.message
+      // );
+      toast.error(
+        error?.AxiosError?.name?.response?.data?.message
+          ? error?.AxiosError?.name?.response?.data?.message
+          : "Something Went wrong!!"
+      );
     }
-    console.log("Form Submitted", formData);
+    //console.log("Form Submitted", formData);
   };
 
-  console.log(formData);
+  //console.log(formData);
   return (
     <Home>
       <div className="w-[100%] py-3 sm:p-3 mb-16">
@@ -177,7 +180,7 @@ function AddCourses() {
                     {data?.data &&
                       data?.data.map((elm) => {
                         // const { _id, title } = elm.ccategory;
-                        // console.log(_id, title);
+                        // //console.log(_id, title);
                         return (
                           <>
                             <option value={elm.id}>{elm.title}</option>
@@ -270,7 +273,7 @@ function AddCourses() {
                     {data2?.data &&
                       data2?.data.map((elm) => {
                         // const { _id, sname } = elm.ctrainer;
-                        // console.log(_id, sname);
+                        // //console.log(_id, sname);
                         return (
                           <>
                             <option value={elm.id}>{elm.sname}</option>
@@ -281,7 +284,7 @@ function AddCourses() {
                 </div>
               </div>
 
-              <div className="col-12 col-sm-4">
+              {/* <div className="col-12 col-sm-4">
                 <label className="text-white" htmlFor="exampleInputUsername1">
                   Course Thumbnail
                 </label>
@@ -292,7 +295,7 @@ function AddCourses() {
                   placeholder="Course Duration"
                   onChange={handleChange}
                 />
-              </div>
+              </div> */}
               <div className="col-12 col-sm-4">
                 <label className="text-white" htmlFor="exampleInputUsername1">
                   Course Cover Image
@@ -357,6 +360,7 @@ function AddCourses() {
               >
                 Submit
               </button>
+
               <button
                 type="reset"
                 className="Cancel-btn  py-2  rounded-sm my-2 px-5 sm:px-4"

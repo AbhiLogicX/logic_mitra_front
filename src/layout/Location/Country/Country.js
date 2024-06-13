@@ -24,10 +24,10 @@ function LocationCountry() {
     status: "1",
     currency: "",
   });
-  console.log(params);
+  //console.log(params);
   //handle addition of category
   const handleChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { name, value, type, files } = event.target;
     setparams({
       ...params,
@@ -38,13 +38,13 @@ function LocationCountry() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(params);
+    //console.log(params);
 
     // addData(params, CountryUrl);
 
     try {
       const res = await axios.post("/address/create-country", params); //Adding the data
-      console.log(res.data);
+      //console.log(res.data);
 
       if (res.status === 200) {
         toast.success(res?.data?.message || "Data Created successfully");
@@ -66,7 +66,7 @@ function LocationCountry() {
 
   // Handle deletion of a category
   const handleDelete = async (e) => {
-    console.log("cate id is ", e.target.id);
+    //console.log("cate id is ", e.target.id);
     Delete(e.target.id, CountryUrl);
   };
 
@@ -74,14 +74,14 @@ function LocationCountry() {
 
   const [data, error, loading] = useFetch("/address/country-list", true);
 
-  console.log(data);
+  //console.log(data);
 
-  console.log("hello dear");
+  //console.log("hello dear");
   // /api/address/country-list
 
   const [data1, error1, loading1] = useFetch("/address/country-list", true);
 
-  console.log(data1);
+  //console.log(data1);
 
   return (
     <Home>

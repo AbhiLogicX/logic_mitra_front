@@ -21,11 +21,11 @@ function EditCity() {
     catId
   );
 
-  console.log(data);
+  //console.log(data);
   // State to store form parameters
   const [params, setParams] = useState({});
 
-  console.log(params);
+  //console.log(params);
   // Updates params when data is fetched
   useEffect(() => {
     if (data) {
@@ -49,18 +49,18 @@ function EditCity() {
 
   // Handles form submission
   const handleSubmit = async (e) => {
-    console.log(e);
+    //console.log(e);
 
     e.preventDefault();
 
-    console.log(params);
+    //console.log(params);
     // Calls the handleUpdate function from the custom hook
     try {
       const res = await axios.put(
         `/address/update-city?addId=${e.target.id}`,
         params
       );
-      console.log(await res.data);
+      //console.log(await res.data);
       if (res.status === 200) {
         toast.success(res?.data?.message || "Data updated Successfully");
         navigate(CitUrl);
@@ -69,7 +69,7 @@ function EditCity() {
         }, 2000);
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
       toast.error("An error occurred");
     }
 

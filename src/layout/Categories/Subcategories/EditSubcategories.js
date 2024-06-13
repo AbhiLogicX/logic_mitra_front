@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import swal from "sweetalert";
+import { useParams } from "react-router-dom";
+// import swal from "sweetalert";
 import { useFetch } from "../../../hooks/useFetch";
 import useUpdate from "../../../hooks/useUpdate";
-import axios from "axios";
-import { toast } from "react-toastify";
+// import axios from "axios";
+// import { toast } from "react-toastify";
 import Home from "../../../Home";
 
 function EditSubcategories() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const SubCategoryId = id;
 
   const Url = window.location.href;
 
   const SubCatUrl1 = Url.substring(0, Url.lastIndexOf("/edit/"));
   const SubCatUrl = SubCatUrl1.substring(SubCatUrl1.indexOf("/categories/"));
-  console.log(SubCatUrl);
+  //console.log(SubCatUrl);
 
   // Fetch category data using a custom hook (useFetch)
 
@@ -25,7 +25,7 @@ function EditSubcategories() {
     SubCategoryId
   );
 
-  console.log(data);
+  //console.log(data);
   // State to store form parameters
 
   const [params, setParams] = useState({});
@@ -47,20 +47,18 @@ function EditSubcategories() {
   };
 
   // Uses a custom hook (useUpdate) for handling the update API call
-  const [handleUpdate] = useUpdate(
-    `/categories/update-subcat`
-  );
+  const [handleUpdate] = useUpdate(`/categories/update-subcat`);
 
   // Handles form submission
   const handleSubmit = async (e) => {
-    console.log(e.target.id);
+    //console.log(e.target.id);
     e.preventDefault();
     const formData = new FormData();
     formData.append("image", params.imageUrl);
 
-    console.log(e);
+    //console.log(e);
 
-    console.log(params);
+    //console.log(params);
 
     // try {
 
@@ -70,7 +68,7 @@ function EditSubcategories() {
 
     //     },
     //   });
-    //   console.log(res);
+    //   //console.log(res);
     //   if (res.status === 200) {
     //     toast.success(res?.data?.message || "Data updated Successfully");
     //     navigate(SubCatUrl1);
@@ -87,7 +85,7 @@ function EditSubcategories() {
     handleUpdate(`subcatId=${e.target.id}`, params, SubCatUrl);
   };
 
-  console.log(params);
+  //console.log(params);
 
   return (
     <>
@@ -176,7 +174,7 @@ function EditSubcategories() {
                             id="active"
                             name="status"
                             value={1}
-                            checked={params?.status == 1}
+                            checked={params?.status === 1}
                             onChange={handleChange}
                           />
                           Active
@@ -185,7 +183,7 @@ function EditSubcategories() {
                             id="active"
                             name="status"
                             value={0}
-                            checked={params?.status == 0}
+                            checked={params?.status === 0}
                             onChange={handleChange}
                           />
                           Inactive
@@ -196,7 +194,7 @@ function EditSubcategories() {
                     <div className="h-44 md:h-[100%]  w-[100%] md:w-[20%] border-2 rounded-md">
                       <img
                         src={`https://api.logicmitra.com/uploads/subcategories/${params?.imageUrl}`}
-                        alt="image"
+                        alt="sub cat logo"
                         className="w-[100%] h-[100%]  object-cover"
                       />
                     </div>

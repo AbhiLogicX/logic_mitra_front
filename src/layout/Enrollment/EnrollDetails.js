@@ -7,7 +7,7 @@ import Home from "../../Home";
 const EnrollDetails = () => {
   const { id } = useParams();
   const [data, error, loading] = useFetch(`/enroll/enroll-detail?eId=${id}`);
-  console.log(data);
+  //console.log(data);
   return (
     <>
       <Home>

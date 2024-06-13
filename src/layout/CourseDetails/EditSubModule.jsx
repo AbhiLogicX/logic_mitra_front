@@ -32,9 +32,9 @@ const EditSubModule = () => {
     }
   }, [data]);
 
-  console.log(params);
+  //console.log(params);
   const handleChange = async (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     const { name, value, type, files } = e.target;
     setParams({
       ...params,
@@ -44,7 +44,7 @@ const EditSubModule = () => {
 
   const [handleUpdate] = useUpdate(`/course-detail/update-submodule`);
   const handleSubmit = async (e) => {
-    console.log(e);
+    //console.log(e);
     e.preventDefault();
     handleUpdate(`submoduleId=${e.target.id}`, params, SubModuleUrl1);
   };

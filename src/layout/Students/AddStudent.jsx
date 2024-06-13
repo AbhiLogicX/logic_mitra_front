@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useAdd } from "../../hooks/useAdd";
-import swal from "sweetalert";
-import { useNavigate } from "react-router-dom";
+// import swal from "sweetalert";
+import { Link } from "react-router-dom";
 import { useFetch } from "../../hooks/useFetch";
 import axios from "axios";
-import { toast } from "react-toastify";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormHelperText from "@mui/material/FormHelperText";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import PhoneInput from "react-phone-number-input/input";
+// import { toast } from "react-toastify";
+// import InputLabel from "@mui/material/InputLabel";
+// import MenuItem from "@mui/material/MenuItem";
+// import FormHelperText from "@mui/material/FormHelperText";
+// import FormControl from "@mui/material/FormControl";
+// import Select from "@mui/material/Select";
+// import PhoneInput from "react-phone-number-input/input";
 import Home from "../../Home";
 
 function AddStudent() {
-  const StudentUrl = "/students";
+  const [states, setStates] = useState([]);
+  const [fetchedData, setFetchedData] = useState(false);
+  // const [fetchedDataCity, setFetchedDataCity] = useState(false)
+  const [citiesData, setCitiesData] = useState();
+  // const StudentUrl = "/students";
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const initialFormData = {
     userType: "student",
@@ -42,7 +46,6 @@ function AddStudent() {
     slattitude: "",
     slongitude: "",
     sbackgroundUrl: null,
-
     sprofilepicUrl: null,
   };
 
@@ -53,7 +56,7 @@ function AddStudent() {
 
   const handleChackchange = (e) => {
     Setcheckbtn(e.target.checked);
-    console.log(e.target.value);
+    // //console.log(e.target.value);
 
     if (!Checkbtn) {
       setFormData((prevdata) => ({
@@ -68,6 +71,22 @@ function AddStudent() {
     }
   };
 
+  const handleChangeState = async (e) => {
+    const { name, value, type, files } = e.target;
+    formData.sstate = value;
+
+    await axios
+      .post(`https://countriesnow.space/api/v0.1/countries/state/cities`, {
+        country: "India",
+        state: value,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setCitiesData(res.data.data);
+        }
+      });
+  };
+
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
 
@@ -77,94 +96,117 @@ function AddStudent() {
     }));
   };
 
+  useEffect(() => {
+    async function fetchStates() {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/states`, {
+          country: "india",
+        })
+        .then((res) => {
+          // //console.log("res states--->", res);
+          setStates(res.data.data.states);
+          setFetchedData(true);
+        });
+    }
+
+    if (!fetchedData) {
+      fetchStates();
+    }
+  }, [fetchedData]);
+
   //useAdd here
   const [addData] = useAdd("/user/create_user");
 
-  console.log(formData.sgender);
+  // //console.log(formData.sgender);
 
   const handleSubmit = async (e) => {
-    try {
-      const formdata = new FormData();
-      formdata.append("sprofilepicUrl", formData.sprofilepicUrl);
-      formdata.append("sbackgroundUrl", formData.sbackgroundUrl);
+    // try {
+    //   const formdata = new FormData();
+    //   formdata.append("sprofilepicUrl", formData.sprofilepicUrl);
+    //   formdata.append("sbackgroundUrl", formData.sbackgroundUrl);
 
-      e.preventDefault();
-      const res = await axios.post(`/user/create_user`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      if (res.status === 200) {
-        toast.success("Student Created Successfully");
-        setTimeout(() => {
-          navigate(StudentUrl);
-        }, 1000);
+    //   const res = await axios.post(`/user/create_user`, formData, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //   });
+    //   if (res.status === 200) {
+    //     toast.success("Student Created Successfully");
+    //     setTimeout(() => {
+    //       navigate(StudentUrl);
+    //     }, 1000);
 
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      } else {
-        toast.warn("error while creating course");
-      }
-    } catch (error) {
-      console.error("Error occurred:", error);
-      toast.error("Something Went wrong!!");
-    }
-    console.log("Form Submitted", formData);
+    //     setTimeout(() => {
+    //       window.location.reload();
+    //     }, 2000);
+    //   } else {
+    //     toast.warn("error while creating course");
+    //   }
+    // } catch (error) {
+    //   console.error("Error occurred:", error);
+    //   toast.error("Something Went wrong!!");
+
+    // }
+    const formdata = new FormData();
+    formdata.append("sprofilepicUrl", formData.sprofilepicUrl);
+    formdata.append("sbackgroundUrl", formData.sbackgroundUrl);
+    e.preventDefault();
+    addData(formData, "/students");
+    // //console.log("Form Submitted", formData);
   };
 
-  console.log(formData);
+  // //console.log(formData);
 
   // fetching all country , state, and country data for showing on dropdown
 
-  const [Citydata, error1, loading1] = useFetch("/address/city-list", true);
+  // const [Citydata, error1, loading1] = useFetch("/address/city-list", true);
 
-  console.log(Citydata);
+  // //console.log(Citydata);
 
   const [Countrydata, error2, loading2] = useFetch(
     "/address/country-list",
     true
   );
 
-  const [Statedata, error3, loading3] = useFetch("/address/state-list", true);
+  // const [Statedata, error3, loading3] = useFetch("/address/state-list", true);
 
-  console.log(Statedata);
+  // //console.log(states);
 
   // choose the city after state and coutnry clicked
 
-  useEffect(() => {
-    const fetchcitydata = async () => {
-      try {
-        const res = await axios.get(
-          `/address/city-detail?cityID=${formData.scity}`
-        );
-        const data = res.data;
-        console.log(res.data);
-        console.log(data?.data?.state);
+  // useEffect(() => {
+  //   const fetchcitydata = async () => {
+  //     try {
+  //       const res = await axios.get(
+  //         `/address/city-detail?cityID=${formData.scity}`
+  //       );
+  //       const data = res.data;
+  //       //console.log(res.data);
+  //       //console.log(data?.data?.state);
 
-        const datastate = Statedata?.data?.filter(
-          (elm) => elm.id === data?.data?.state
-        );
-        console.log(datastate);
-        const UniquStatename = datastate.map((elm) => elm.title);
-        console.log(...UniquStatename);
+  //       const datastate = Statedata?.data?.filter(
+  //         (elm) => elm.id === data?.data?.state
+  //       );
+  //       //console.log(datastate);
+  //       const UniquStatename = datastate.map((elm) => elm.title);
+  //       //console.log(...UniquStatename);
 
-        setFormData((predata) => ({
-          ...predata,
-          sstate: UniquStatename.toString(),
-        }));
+  //       setFormData((predata) => ({
+  //         ...predata,
+  //         sstate: UniquStatename.toString(),
+  //       }));
 
-        console.log(datastate);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //       //console.log(datastate);
+  //     } catch (error) {
+  //       //console.log(error);
+  //     }
+  //   };
 
-    fetchcitydata();
-  }, [formData.scity]);
+  //   fetchcitydata();
+  // }, [formData.scity]);
 
-  console.log(formData.sstate);
-  console.log(formData.scity);
+  // //console.log(formData.sstate);
+  // //console.log(formData.scity);
 
   return (
     <Home>
@@ -333,7 +375,7 @@ function AddStudent() {
                   className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2  py-[10px]"
                   onChange={handleChange}
                   name="scountry"
-                  value={formData?.scountry}
+                  value="India"
                   required
                 >
                   <option> Select country</option>
@@ -353,16 +395,16 @@ function AddStudent() {
 
                 <select
                   className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2  py-[10px]"
-                  onChange={handleChange}
+                  onChange={handleChangeState}
                   name="sstate"
-                  value={formData.sstate}
                   required
+                  value={formData?.sstate}
                 >
                   <optoin>Select state</optoin>
-                  {Statedata?.data?.map((elm) => {
+                  {states?.map((elm) => {
                     return (
                       <>
-                        <option value={elm.title}> {elm.title} </option>
+                        <option value={elm.name}> {elm.name} </option>
                       </>
                     );
                   })}
@@ -378,15 +420,13 @@ function AddStudent() {
                   className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2 py-[10px]"
                   onChange={handleChange}
                   name="scity"
-                  value={formData?.scity}
                   required
                 >
                   <option> Select city</option>
-                  {Citydata?.data?.map((elm) => {
-                    console.log(elm.id);
+                  {citiesData?.map((elm) => {
                     return (
                       <>
-                        <option value={`${elm.id}`}> {elm.title} </option>
+                        <option value={elm}> {elm} </option>
                       </>
                     );
                   })}
@@ -575,12 +615,14 @@ function AddStudent() {
               >
                 Submit
               </button>
-              <button
-                type="reset"
-                className="my-2 Cancel-btn sm:px-4 px-5 py-2 rounded-md  "
-              >
-                Cancel
-              </button>
+              <Link to={"/students"}>
+                <button
+                  type="reset"
+                  className="my-2 Cancel-btn sm:px-4 px-5 py-2 rounded-md  "
+                >
+                  Cancel
+                </button>
+              </Link>
             </div>
           </div>
         </form>

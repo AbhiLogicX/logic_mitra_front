@@ -14,7 +14,7 @@ function ViewCourses() {
     `/courses/course-detail?courseId=${id}`,
     id
   );
-  console.log(data);
+  //console.log(data);
   return (
     <>
       <Home>

@@ -10,16 +10,16 @@ const EditBatch = () => {
     `/batches/batch-detail?batchId=${id}`
   );
   const [params, setParams] = useState({});
-  console.log(params);
+  //console.log(params);
   useEffect(() => {
     if (data) {
       setParams(data?.data);
     }
   }, [data]);
-  console.log(data);
+  //console.log(data);
 
   const handleChange = async (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     const { name, value, type, files } = e.target;
     setParams({
       ...params,
@@ -28,7 +28,7 @@ const EditBatch = () => {
   };
   const [handleUpdate] = useUpdate(`/batches/update-batch`);
   const handleSubmit = async (e) => {
-    console.log(e);
+    //console.log(e);
     const formData = new FormData();
     formData.append("image", params.bimage);
 
@@ -115,7 +115,7 @@ const EditBatch = () => {
               <div className="h-44 md:h-[100%]  w-[100%] md:w-[20%] border-2 rounded-md m-6">
                 <img
                   src={`https://api.logicmitra.com:8086/uploads/batch/${params?.bimage}`}
-                  alt="image"
+                  alt="batch logo"
                   className="w-[100%] h-[100%]  object-contain"
                 />
               </div>
@@ -143,7 +143,7 @@ const EditBatch = () => {
                       id="active"
                       name="bstatus"
                       value={1}
-                      checked={params?.bstatus == 1}
+                      checked={params?.bstatus === 1}
                       onChange={handleChange}
                     />
                     Running
@@ -156,7 +156,7 @@ const EditBatch = () => {
                       value={0}
                       name="bstatus"
                       onChange={handleChange}
-                      checked={params?.bstatus == 0}
+                      checked={params?.bstatus === 0}
                     />
                     upcomming
                   </div>
@@ -167,7 +167,7 @@ const EditBatch = () => {
                       value={2}
                       name="bstatus"
                       onChange={handleChange}
-                      checked={params?.bstatus == 2}
+                      checked={params?.bstatus === 2}
                     />
                     completed
                   </div>
@@ -178,7 +178,7 @@ const EditBatch = () => {
                       value={3}
                       name="bstatus"
                       onChange={handleChange}
-                      checked={params?.bstatus == 3}
+                      checked={params?.bstatus === 3}
                     />
                     cancelled
                   </div>

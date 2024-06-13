@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link, useLocation } from "react-router-dom";
 import { useFetch } from "../../hooks/useFetch";
 import useUpdate from "../../hooks/useUpdate";
 import Home from "../../Home";
@@ -13,7 +13,7 @@ const EditModule = () => {
 
   const Url = window.location.href;
   const ModuleUrl = Url.substring(Url.indexOf("/courses/"));
-  const ModuleUrl1 = ModuleUrl.substring(0, ModuleUrl.lastIndexOf("/edit/"));
+  const ModuleUrl1 = ModuleUrl.substring(0, ModuleUrl.lastIndexOf("/module"));
 
   const [params, setParams] = useState({});
   useEffect(() => {
@@ -23,7 +23,7 @@ const EditModule = () => {
   }, [data]);
 
   const handleChange = async (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     const { name, value, type, files } = e.target;
     setParams({
       ...params,
@@ -32,11 +32,11 @@ const EditModule = () => {
   };
   const [handleUpdate] = useUpdate(`/course-detail/update-module`);
   const handleSubmit = async (e) => {
-    console.log(e);
+    //console.log(e);
     e.preventDefault();
     handleUpdate(`moduleId=${e.target.id}`, params, ModuleUrl1);
   };
-  console.log(params);
+  //console.log("para------>", params);
 
   return (
     <Home>
@@ -161,12 +161,14 @@ const EditModule = () => {
                 >
                   Submit
                 </button>
-                <button
-                  type="reset"
-                  className="Cancel-btn  py-2  rounded-sm my-2 px-5"
-                >
-                  Cancel
-                </button>
+                <Link to={`/courses/${params?.course}/module`}>
+                  <button
+                    type="reset"
+                    className="Cancel-btn  py-2  rounded-sm my-2 px-5"
+                  >
+                    Cancel
+                  </button>
+                </Link>
               </div>
             </form>
           </div>

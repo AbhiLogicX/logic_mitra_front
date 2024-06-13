@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
-import { CiGrid41 } from "react-icons/ci";
-import { Tooltip } from "@mui/material";
-import Dropdown from "react-bootstrap/Dropdown";
+// import { CiGrid41 } from "react-icons/ci";
+// import { Tooltip } from "@mui/material";
+// import Dropdown from "react-bootstrap/Dropdown";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { useState } from "react";
 
@@ -29,9 +29,9 @@ const Sidebar = ({ setshow, show }) => {
   };
 
   const handleLogut = () => {
+    navigate("/login");
     localStorage.clear();
     window.location.reload();
-    navigate("/login");
   };
   return (
     <>

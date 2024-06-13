@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import Popup from "reactjs-popup";
 import ImageViewer from "../../../components/ImageViewer";
-import axios from "axios";
+// import axios from "axios";
 import { useAdd } from "../../../hooks/useAdd";
 import { useDeleteOne } from "../../../hooks/useDeleteOne";
 import { useFetch } from "../../../hooks/useFetch";
@@ -22,7 +22,7 @@ const SubcatList = () => {
     description: "",
   });
 
-  console.log(params);
+  //console.log(params);
   //handle addition of category
   const handleChange = (event) => {
     const { name, value, type, files } = event.target;
@@ -56,7 +56,7 @@ const SubcatList = () => {
     true
   );
 
-  console.log("subcatlistdata", subcatlistdata);
+  //console.log("subcatlistdata", subcatlistdata);
   return (
     <Home>
       <div className="py-3  p-3 text-white w-[100%]  relative mb-16">
@@ -101,7 +101,7 @@ const SubcatList = () => {
                                 <button>
                                   <img
                                     src={`https://api.logicmitra.com/uploads/subcategories/${item.imageUrl}`}
-                                    alt="image"
+                                    alt="logo"
                                     className="w-10 h-10 rounded-md"
                                   />
                                 </button>
@@ -187,7 +187,7 @@ const SubcatList = () => {
                         id="active"
                         name="status"
                         value={1}
-                        checked={params?.status == 1}
+                        checked={params?.status === 1}
                         onChange={handleChange}
                       />
                       Active
@@ -200,7 +200,7 @@ const SubcatList = () => {
                         value={0}
                         name="status"
                         onChange={handleChange}
-                        checked={params?.status == 0}
+                        checked={params?.status === 0}
                       />
                       Inactive
                     </div>

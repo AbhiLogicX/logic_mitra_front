@@ -23,13 +23,13 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
         setloading(false);
         seterror(false);
         if (user.status === 200) {
-          console.log(user);
+          //console.log(user);
           setuserList(user?.data?.data);
         } else {
-          console.log("something is fisyy");
+          //console.log("something is fisyy");
         }
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         seterror(error.message);
       }
     };
@@ -37,10 +37,10 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
     fetchdata();
   }, []);
 
-  console.log(TrainerList);
-  console.log(UserList);
+  //console.log(TrainerList);
+  //console.log(UserList);
 
-  console.log(StudentList);
+  //console.log(StudentList);
 
   useEffect(() => {
     const fetchdata = async () => {
@@ -51,13 +51,13 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
         setloading1(false);
         seterror1(false);
         if (trainer.status === 200) {
-          console.log(trainer);
+          //console.log(trainer);
           setTrainerList(trainer.data.data);
         } else {
-          console.log("something is fisyy");
+          //console.log("something is fisyy");
         }
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         seterror1(error.message);
       }
     };
@@ -74,13 +74,13 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
         setloading2(false);
         seterror2(false);
         if (student.status === 200) {
-          console.log(student);
+          //console.log(student);
           setStudentList(student.data.data);
         } else {
-          console.log("something is fisyy");
+          //console.log("something is fisyy");
         }
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         seterror2(error.message);
       }
     };
@@ -90,7 +90,7 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
 
   const [search, setsearch] = useState("");
 
-  console.log(search);
+  //console.log(search);
 
   const handlechange = (event) => {
     setsearch(event.target.value);
@@ -111,7 +111,7 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
   // },[search , StudentList , setStudentList  ])
 
   const AddList = (event) => {
-    console.log(event.target.id);
+    //console.log(event.target.id);
     if (open === "StudentList") {
       const studentdata = StudentList.find((elm) => elm.id === event.target.id);
       if (userId?.includes(studentdata)) {
@@ -146,7 +146,7 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
   };
 
   const RemoveList = (e) => {
-    console.log(e.target.id);
+    //console.log(e.target.id);
     if (open === "StudentList") {
       const studentdata = userId.filter((elm) => elm.id !== e.target.id);
 
@@ -171,7 +171,7 @@ const FieldUST = ({ open, setOpen, userId, SetParams }) => {
     }
   };
 
-  console.log(userId);
+  //console.log(userId);
 
   return (
     <>

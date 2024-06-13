@@ -11,7 +11,7 @@ const Notification = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState("AlluserList");
 
-  console.log(open);
+  //console.log(open);
   const handleClickOpen = (elm) => {
     setOpen(elm);
   };
@@ -44,17 +44,17 @@ const Notification = () => {
       );
       if (data.response == "success") {
         toast.success("Notification Sent");
-        console.log(data);
+        //console.log(data);
         navigate("/");
       } else {
         toast.warn("Try Again!!");
-        console.log(data);
+        //console.log(data);
       }
     } catch (error) {
       toast.error("Something Went Wrong!!");
     }
   };
-  console.log(params);
+  //console.log(params);
 
   return (
     <>

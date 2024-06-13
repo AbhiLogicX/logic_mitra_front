@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Home from "../../Home";
 const Enrollment = () => {
   const [data, error, loading] = useFetch(`/enroll/enroll-list`);
-  console.log(data);
+  //console.log(data);
   return (
     <>
       <Home>
@@ -115,7 +115,7 @@ const Enrollment = () => {
                     {/* Display error message if there's an error */}
                     {error && <h1 className="text-white">{error.message}</h1>}
                     {/* Display trainers data if available */}
-                    {!data?.data == [] && (
+                    {data?.data?.length !== 0 && (
                       <div className="table-responsive Ttable mt-4   overflow-y-auto Table-overflow">
                         <table className=" table-striped w-[100%]">
                           <thead>
@@ -140,8 +140,7 @@ const Enrollment = () => {
                                 <td> {item?.payamount} Rs</td>
                                 <td> {item.status}</td>
                                 <td>
-                                  {" "}
-                                  {item?.paystatus == 1 ? "paid" : "pending"}
+                                  {item?.paystatus === 1 ? "paid" : "pending"}
                                 </td>
                                 <td className="flex gap-2 items-cente justify-center">
                                   <Link

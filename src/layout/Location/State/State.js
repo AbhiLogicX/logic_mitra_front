@@ -23,16 +23,16 @@ function LocationState() {
     status: "1",
     country: "",
   });
-  console.log(
-    params.title,
+  //console.log(
+  //   params.title,
 
-    params.country,
-    params.sequence,
-    params.status
-  );
+  //   params.country,
+  //   params.sequence,
+  //   params.status
+  // );
   //handle addition of category
   const handleChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { name, value, type, files } = event.target;
     setparams({
       ...params,
@@ -45,10 +45,10 @@ function LocationState() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(params);
+    //console.log(params);
     try {
       const res = await axios.post("/address/create-state", params); //Adding the data
-      console.log(res.data);
+      //console.log(res.data);
 
       if (res.status === 200) {
         toast.success(res?.data?.message || "Data Created successfully");
@@ -72,7 +72,7 @@ function LocationState() {
 
   // Handle deletion of a category
   const handleDelete = async (e) => {
-    console.log("cate id is ", e.target.id);
+    //console.log("cate id is ", e.target.id);
 
     Delete(e.target.id, StateUrl);
   };
@@ -80,7 +80,7 @@ function LocationState() {
   // Fetch category data using a custom hook (useFetch)
   const [data, error, loading] = useFetch("/address/state-list    ", true);
 
-  console.log(data);
+  //console.log(data);
 
   // Fetch category data using a custom hook (useFetch)
   const [CoutryList, error1, loading1] = useFetch(
@@ -88,7 +88,7 @@ function LocationState() {
     true
   );
 
-  console.log(CoutryList);
+  //console.log(CoutryList);
 
   return (
     <Home>

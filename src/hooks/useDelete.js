@@ -4,7 +4,9 @@ import { toast } from "react-toastify";
 import swal from "sweetalert";
 function useDelete(url) {
   const Delete = async (id, reloadData) => {
+    //console.log("reloadData ----->", reloadData);
     try {
+      //console.log("SetReloaData ---->", id);
       swal({
         title: "Are you sure?",
         text: "Once deleted, you will not be able to recover!",
@@ -12,7 +14,6 @@ function useDelete(url) {
         buttons: true,
         dangerMode: true,
       }).then(async (willDelete) => {
-        console.log("willDelete", willDelete);
         if (willDelete) {
           await axios.delete(`${url}${id}`).then((res) => {
             if (res.status === 200) {

@@ -24,16 +24,16 @@ function LocationCity() {
     sequence: "",
     status: "1",
   });
-  console.log(
-    params.title,
-    params.state,
+  // //console.log(
+  //   params.title,
+  //   params.state,
 
-    params.sequence,
-    params.status
-  );
+  //   params.sequence,
+  //   params.status
+  // );
   //handle addition of category
   const handleChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { name, value, type, files } = event.target;
     setparams({
       ...params,
@@ -46,11 +46,11 @@ function LocationCity() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(params);
+    //console.log(params);
 
     try {
       const res = await axios.post("/address/create-city", params); //Adding the data
-      console.log(res.data);
+      //console.log(res.data);
 
       if (res.status === 200) {
         toast.success(res?.data?.message || "Data Created successfully");
@@ -73,12 +73,12 @@ function LocationCity() {
 
   // Handle deletion of a category
   const handleDelete = async (e) => {
-    console.log("cate id is ", e.target.id);
+    //console.log("cate id is ", e.target.id);
 
     // try {
     //   const res = await axios.delete(`https://api.logicmitra.com:8086/api/address/delete-city?cityId=${e.target.id}`
     //   ); //Adding the data
-    //   console.log(res.data);
+    //   //console.log(res.data);
 
     //   if (res.status === 200) {
     //     toast.success(res?.data?.message || "Data Created successfully");
@@ -100,7 +100,7 @@ function LocationCity() {
   // Fetch category data using a custom hook (useFetch)
   const [data, error, loading] = useFetch("/address/city-list", true);
 
-  console.log(data);
+  //console.log(data);
 
   //   fetch the state address data using fetch api
 
@@ -109,7 +109,7 @@ function LocationCity() {
     true
   );
 
-  console.log(StateList);
+  //console.log(StateList);
 
   return (
     <Home>

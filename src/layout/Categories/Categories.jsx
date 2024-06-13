@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
-import { Link, useNavigate } from "react-router-dom";
-import swal from "sweetalert";
-import axios from "axios";
-import useUpdate from "../../hooks/useUpdate";
-import { useFetchOnce } from "../../hooks/useFetchOnce";
-import { useDeleteOne } from "../../hooks/useDeleteOne";
+import { Link } from "react-router-dom";
+// import swal from "sweetalert";
+// import axios from "axios";
+// import useUpdate from "../../hooks/useUpdate";
+// import { useFetchOnce } from "../../hooks/useFetchOnce";
+import { useDelete } from "../../hooks/useDelete";
 import { useAdd } from "../../hooks/useAdd";
 
 import Popup from "reactjs-popup";
@@ -13,7 +13,7 @@ import ImageViewer from "../../components/ImageViewer";
 import Home from "../../Home";
 
 function Categories() {
-  const CategoryUrl = "/categories";
+  // const CategoryUrl = "/categories";
 
   const [params, setparams] = useState({
     title: "",
@@ -22,16 +22,20 @@ function Categories() {
     status: "1",
     description: "",
   });
-  console.log(
-    params.title,
-    params.imageUrl,
-    params.description,
-    params.sequence,
-    params.status
-  );
+  // //console.log(
+  //   params.title,
+  //   params.imageUrl,
+  //   params.description,
+  //   params.sequence,
+  //   params.status
+  // );
+
+  // Fetch category data using a custom hook (useFetch)
+  const [data, error, loading, setReload] = useFetch("/categories/list", true);
+
   //handle addition of category
   const handleChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { name, value, type, files } = event.target;
     setparams({
       ...params,
@@ -46,24 +50,21 @@ function Categories() {
     const formData = new FormData();
     formData.append("imageUrl", params.imageUrl);
 
-    console.log(params);
-    addData(params, CategoryUrl);
+    //console.log(params);
+    addData(params, "", setReload);
   };
 
-  console.log(params, CategoryUrl);
+  //console.log(params, CategoryUrl);
   // delete the particular Categories
-  const { Delete } = useDeleteOne(`/categories/delete-cat?catId=`);
+  const [Delete] = useDelete(`/categories/delete-cat?catId=`);
 
   // Handle deletion of a category
   const handleDelete = async (e) => {
-    console.log("cate id is ", e.target.id);
-    Delete(e.target.id, CategoryUrl);
+    //console.log("cate id is ", e.target.id);
+    Delete(e.target.id, setReload);
   };
 
-  // Fetch category data using a custom hook (useFetch)
-  const [data, error, loading] = useFetch("/categories/list", true);
-
-  console.log(data);
+  //console.log(data);
 
   return (
     <Home>
@@ -84,7 +85,7 @@ function Categories() {
               {/* Display error message if there's an error */}
               {error && <h1 className="text-white">{error.message}</h1>}
               {/* Display Category data if available */}
-              {!data?.data == [] && (
+              {data?.data?.length !== 0 && (
                 <div className="table-responsive Ttable  overflow-y-auto Table-overflow">
                   <table className=" table-striped w-[100%]">
                     <thead>
@@ -100,7 +101,7 @@ function Categories() {
                     </thead>
                     <tbody className="table-group-divider">
                       {/* Map through trainers data and display in table rows */}
-                      {data.data.map((item) => (
+                      {data?.data?.map((item) => (
                         <tr key={item.id} className="Tbody">
                           <td>{item.title}</td>
                           <td>
@@ -110,7 +111,7 @@ function Categories() {
                                   {" "}
                                   <img
                                     src={`https://api.logicmitra.com/uploads/categories/${item.imageUrl}`}
-                                    alt="image"
+                                    alt="logo"
                                     className="w-10 h-10 rounded-md"
                                   />
                                 </button>
@@ -207,7 +208,7 @@ function Categories() {
                         id="active"
                         name="status"
                         value={1}
-                        checked={params?.status == 1}
+                        checked={params?.status === 1}
                         onChange={handleChange}
                       />
                       Active
@@ -220,7 +221,7 @@ function Categories() {
                         value={0}
                         name="status"
                         onChange={handleChange}
-                        checked={params?.status == 0}
+                        checked={params?.status === 0}
                       />
                       Inactive
                     </div>

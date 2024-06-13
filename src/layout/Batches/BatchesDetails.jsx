@@ -12,12 +12,12 @@ import { useFetch } from "../../hooks/useFetch";
 import Home from "../../Home";
 const BatchesDetails = () => {
   const { id } = useParams();
-  console.log(id);
+  //console.log(id);
   const [data, error, loading] = useFetch(
     `/batches/batch-detail?batchId=${id}`
   );
 
-  console.log(data?.data);
+  //console.log(data?.data);
   const [show, setshow] = useState(false);
   const showmoreclick = () => {
     setshow(!show);
@@ -54,7 +54,7 @@ const BatchesDetails = () => {
                   <div className="md:w-[40%] h-52">
                     <img
                       src={`https://api.logicmitra.com:8086/uploads/batch/${data?.data?.bimage}`}
-                      alt="image"
+                      alt="batch logo"
                       className="w-[100%] h-[100%]  image1 rounded-md"
                     />
                   </div>

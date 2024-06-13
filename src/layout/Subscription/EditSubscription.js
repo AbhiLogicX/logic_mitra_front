@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import swal from "sweetalert";
 import { useFetch } from "../../hooks/useFetch";
 import useUpdate from "../../hooks/useUpdate";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { useFetchOnce } from "../../hooks/useFetchOnce";
 import Home from "../../Home";
 
 function EditSubscription() {
   const SubscriptionUrl = "/subscription";
-
+  const [fetchedData, setFetchedData] = useState(false);
+  const [cityDataList, setCityDataList] = useState([]);
+  const [params, setParams] = useState({});
+  const nav = useNavigate();
   const { id } = useParams();
   const catId = id;
-  console.log(id);
+  // //console.log(id);
 
   // Fetch category data using a custom hook (useFetch)
 
@@ -22,13 +26,32 @@ function EditSubscription() {
   );
 
   // State to store form parameters
-  const [params, setParams] = useState({});
 
-  console.log(params);
+  // //console.log(params);
   // Updates params when data is fetched
   useEffect(() => {
+    async function fetchCityData() {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/cities`, {
+          country: "india",
+        })
+        .then((res) => {
+          if (res) {
+            setCityDataList(res.data.data);
+            setFetchedData(true);
+          }
+        })
+        .catch((err) => {
+          setCityDataList([]);
+          setFetchedData(true);
+        });
+    }
+
     if (data) {
       setParams(data.data);
+    }
+    if (!fetchedData) {
+      fetchCityData();
     }
   }, [data, loading, error]);
 
@@ -43,22 +66,33 @@ function EditSubscription() {
     }));
   };
 
-  console.log(params);
+  // //console.log(params);
 
   // http://api/subscription/update-subscription?subId=
   // Uses a custom hook (useUpdate) for handling the update API call
-  const [handleUpdate] = useUpdate(`/subscription/update-subscription`);
+  // const [handleUpdate] = useUpdate(`/subscription/update-subscription`);
 
-  console.log(params);
+  // //console.log(params);
   // Handles form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    // //console.log("params ----->", params);
     // Calls the handleUpdate function from the custom hook
-    handleUpdate(`subId=${e.target.id}`, params, SubscriptionUrl);
+    // handleUpdate(`subId=${e.target.id}`, params, SubscriptionUrl);
+    await axios
+      .put(`subscription/update-subscription?subId=${e.target.id}`, params)
+      .then((res) => {
+        if (res.status === 200) {
+          nav(SubscriptionUrl);
+        }
+      })
+      .catch((err) => {
+        toast.error("Error occurred plan not updated");
+      });
   };
 
   //* city lists data
-  const [CityList, error1, loading1] = useFetch("/address/city-list", true);
+  // const [CityList, error1, loading1] = useFetch("/address/city-list", true);
 
   return (
     <>
@@ -115,10 +149,10 @@ function EditSubscription() {
                           value={params?.city}
                         >
                           <option> select city</option>
-                          {CityList?.data?.map((elm) => {
+                          {cityDataList?.map((elm) => {
                             return (
                               <>
-                                <option value={elm.id}> {elm.title} </option>
+                                <option value={elm}> {elm} </option>
                               </>
                             );
                           })}
@@ -199,12 +233,14 @@ function EditSubscription() {
                 >
                   Update
                 </button>
-                <button
-                  type="reset"
-                  className="Cancel-btn  rounded-md sm:px-4 px-5 py-2"
-                >
-                  Cancel
-                </button>
+                <Link to={"/subscription"}>
+                  <button
+                    type="reset"
+                    className="Cancel-btn  rounded-md sm:px-4 px-5 py-2"
+                  >
+                    Cancel
+                  </button>
+                </Link>
               </div>
             </form>
           </div>

@@ -1,8 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
-import { CiGrid41 } from "react-icons/ci";
-import { Tooltip } from "@mui/material";
-import Dropdown from "react-bootstrap/Dropdown";
+// import { CiGrid41 } from "react-icons/ci";
+// import { Tooltip } from "@mui/material";
+// import Dropdown from "react-bootstrap/Dropdown";
 import { PiStudentBold } from "react-icons/pi";
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
 import { useState } from "react";
@@ -22,6 +22,7 @@ import { TbBuildingEstate } from "react-icons/tb";
 import { GiModernCity } from "react-icons/gi";
 import { BsPinMap } from "react-icons/bs";
 import { FaRightFromBracket } from "react-icons/fa6";
+// import { useAuth } from "../../../context/auth";
 
 const Sidebar = ({ setshow, show }) => {
   const [showdrop, setshowdrop] = useState(false);
@@ -32,9 +33,9 @@ const Sidebar = ({ setshow, show }) => {
   const navigate = useNavigate();
 
   const handleLogut = () => {
+    navigate("/login");
     localStorage.clear();
     window.location.reload();
-    navigate("/login");
   };
 
   return (

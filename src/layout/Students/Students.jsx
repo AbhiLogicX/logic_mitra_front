@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Card from "../../components/Card";
-import swal from "sweetalert";
-import { useDeleteOne } from "../../hooks/useDeleteOne";
+// import swal from "sweetalert";
+// import { useDeleteOne } from "../../hooks/useDeleteOne";
 import Home from "../../Home";
 import { useDelete } from "../../hooks/useDelete";
 
 function Students() {
-  const StudentUrl = "/students";
+  // const StudentUrl = "/students";
   //setting parameters for future requests
   const [params, setParams] = useState({
     name: "",
@@ -27,7 +27,7 @@ function Students() {
   //   "/user/list?userType=student"
   // );
 
-  console.log("sutdetadat", data);
+  // //console.log("sutdetadat", data);
   //setting student categories count
   const [totalStudents, setTotalStudents] = useState(0);
   const [organizationStudents, setOrganisationStudents] = useState(0);
@@ -62,13 +62,13 @@ function Students() {
 
   //handling delete student request
   const handleDelete = async (e) => {
-    // console.log("delId", e.target.id);
-    // console.log("Delete", Delete);
+    // //console.log("delId", e.target.id);
+    // //console.log("Delete", Delete);
     Delete(e.target.id, setReload);
   };
 
   // Fetch category data using a custom hook (useFetch)
-  const [CityList, error3, loading3] = useFetch("/address/city-list", true);
+  // const [CityList, error3, loading3] = useFetch("/address/city-list", true);
 
   return (
     <Home>
@@ -201,7 +201,7 @@ function Students() {
                         <tbody className="table-group-divider ">
                           {data?.data?.map((item) => (
                             <tr key={item.id} className="Tbody ">
-                              {/* {console.log(item.id)} */}
+                              {/* {//console.log(item.id)} */}
                               {/* <td className="py-1">
                             <img src="../../images/faces/face1.jpg" alt="image"/>
                           </td> */}
@@ -209,7 +209,7 @@ function Students() {
                               <td>{item.smobile}</td>
                               <td> {item.semail}</td>
                               <td>
-                                {CityList?.data
+                                {/* {CityList?.data
                                   ?.filter((elm) => {
                                     return elm.id === item.scity;
                                   })
@@ -221,7 +221,8 @@ function Students() {
                                         </div>
                                       </>
                                     );
-                                  })}
+                                  })} */}
+                                {item.scity}
                               </td>
                               {/* <td>{item.sdob}</td>
                       <td>{item.createdAt}</td> */}

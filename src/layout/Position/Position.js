@@ -1,10 +1,10 @@
 // api/subscription/assigned-positions
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
-import { Link, useNavigate } from "react-router-dom";
-import Card from "../../components/Card";
-import swal from "sweetalert";
+import { Link } from "react-router-dom";
+// import Card from "../../components/Card";
+// import swal from "sweetalert";
 import { useDeleteOne } from "../../hooks/useDeleteOne";
 import moment from "moment";
 import Home from "../../Home";
@@ -24,7 +24,7 @@ function Position() {
     params
   );
 
-  console.log("positiondata", data);
+  //console.log("positiondata", data);
 
   //handling filters
   const handleChange = (e) => {
@@ -35,7 +35,7 @@ function Position() {
 
   //handling delete student request
   const handleDelete = async (e) => {
-    console.log(e.target.id);
+    //console.log(e.target.id);
 
     Delete(e.target.id, PositionUrl);
   };

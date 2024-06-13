@@ -25,11 +25,11 @@ function ViewStudentInfo() {
   const { id } = useParams();
   const [data, error, loading] = useFetch(`/user/details?userID=${id}`);
 
-  console.log(data);
+  // //console.log(data);
 
   const [CTR, setCTR] = useState("courses");
 
-  console.log(CTR);
+  // //console.log(CTR);
 
   const [show, setshow] = useState(false);
   const showmoreclick = () => {

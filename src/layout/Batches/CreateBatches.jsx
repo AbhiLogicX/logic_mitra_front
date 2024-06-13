@@ -18,9 +18,9 @@ const CreateBatches = () => {
     btrainer: "",
     bcourse: "",
   });
-  console.log(params);
+  //console.log(params);
   const handleChange = async (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     const { name, value, type, files } = e.target;
     setParams({
       ...params,
@@ -33,7 +33,7 @@ const CreateBatches = () => {
       );
       setCourData(data1?.data?.data?.courses);
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
   };
   const [addData] = useAdd(`batches/create-batch`);
@@ -44,8 +44,8 @@ const CreateBatches = () => {
     e.preventDefault();
     addData(params, "/batches");
   };
-  console.log(courData);
-  console.log(data);
+  //console.log(courData);
+  //console.log(data);
   return (
     <Home>
       <div className="w-[100%] py-3 sm:p-3">
@@ -89,7 +89,7 @@ const CreateBatches = () => {
                     {data?.data &&
                       data?.data?.map((elm) => {
                         // const { _id, title } = elm.csubcategory;
-                        // console.log(_id, title);
+                        // //console.log(_id, title);
 
                         return (
                           <>
@@ -158,7 +158,7 @@ const CreateBatches = () => {
                       {courData &&
                         courData?.map((elm) => {
                           // const { _id, sname } = elm.ctrainer;
-                          // console.log(_id, sname);
+                          // //console.log(_id, sname);
                           return (
                             <>
                               <option value={elm._id}>{elm.ctitle}</option>
@@ -205,7 +205,7 @@ const CreateBatches = () => {
                       id="active"
                       name="bstatus"
                       value={0}
-                      checked={params?.bstatus == 0}
+                      checked={params?.bstatus === 0}
                       onChange={handleChange}
                     />
                     upcomming
@@ -218,7 +218,7 @@ const CreateBatches = () => {
                       value={1}
                       name="bstatus"
                       onChange={handleChange}
-                      checked={params?.bstatus == 1}
+                      checked={params?.bstatus === 1}
                     />
                     running
                   </div>

@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { UseCourseContext } from "../../context/CourseContext";
 import { useFetch } from "../../hooks/useFetch";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { UsesubcategoriesContext } from "../../context/SubcatContext";
 import { useAdd } from "../../hooks/useAdd";
-import swal from "sweetalert";
-import axios from "axios";
+// import swal from "sweetalert";
+// import axios from "axios";
 import { useDeleteOne } from "../../hooks/useDeleteOne";
 import Home from "../../Home";
 
 const SubModule = () => {
   //*find the modules id through params
 
-  const { id } = useParams();
-  const SubModuleId = id;
+  // const { id } = useParams();
+  // const SubModuleId = id;
 
   // todo find the url path to redirect the page
 
@@ -40,9 +40,9 @@ const SubModule = () => {
     module: moduleId,
     status: "1",
   });
-  console.log(params);
+  //console.log(params);
   const handleChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { name, value, files, type } = event.target;
     setParams({
       ...params,
@@ -54,7 +54,7 @@ const SubModule = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     addData(params, SubModuleUrl);
-    console.log(params);
+    //console.log(params);
   };
   const { Delete } = useDeleteOne(
     `/course-detail/delete-submodule?submoduleId=`
@@ -63,8 +63,8 @@ const SubModule = () => {
     Delete(e.target.id, SubModuleUrl);
   };
 
-  console.log(moduleId);
-  console.log(data);
+  //console.log(moduleId);
+  //console.log(data);
   return (
     <Home>
       <div className="pl-3  p-md-3 text-white w-[100%]  relative">
@@ -195,7 +195,7 @@ const SubModule = () => {
                         id="active"
                         name="status"
                         value={1}
-                        checked={params?.status == 1}
+                        checked={params?.status === 1}
                         onChange={handleChange}
                       />
                       Active
@@ -208,7 +208,7 @@ const SubModule = () => {
                         value={0}
                         name="status"
                         onChange={handleChange}
-                        checked={params?.status == 0}
+                        checked={params?.status === 0}
                       />
                       Inactive
                     </div>

@@ -2,15 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { useAdd } from "../../hooks/useAdd";
 import axios from "axios";
+import { toast } from "react-toastify";
 import Home from "../../Home";
+import { useNavigate } from "react-router-dom";
 
 const CreateEnrollment = () => {
   const [courseData, setCourseData] = useState([]);
   const [data, error, loading] = useFetch("/courses/all-course");
   const [data1, error1, loading1] = useFetch("/user/list?userType=student");
-  console.log(data);
-  console.log(data1);
-  console.log(courseData);
+  const local = JSON.parse(localStorage.getItem("admin"));
+  const nevigate = useNavigate();
+  //console.log("local", local);
+  //console.log(data);
+  //console.log(data1);
+  //console.log(courseData);
   const [params, setParams] = useState({
     courseid: "",
     studentid: "",
@@ -26,9 +31,9 @@ const CreateEnrollment = () => {
     paymode: "",
     transactionid: "",
   });
-  console.log(params);
+  //console.log(params);
   const handleChange = async (e) => {
-    console.log(e.target);
+    //console.log(e.target);
     const { name, value, type, files } = e.target;
     setParams({
       ...params,
@@ -41,7 +46,7 @@ const CreateEnrollment = () => {
         );
         setCourseData(data?.data?.data);
       } catch (error) {
-        console.log(error);
+        //console.log(error);
       }
     }
   };
@@ -50,14 +55,26 @@ const CreateEnrollment = () => {
       ...params,
       trainerid: courseData?.ctrainer?._id,
       payamount: courseData?.cfees,
+      adminid: local.userId,
     });
-  }, [courseData]);
+  }, [courseData, local.userId, params]);
 
-  const [addData] = useAdd(`/enroll/enroll-student`);
-  const handleSubmit = (e) => {
+  // const [addData] = useAdd(`/enroll/enroll-student`);
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addData(params, "/enrollment");
+    // addData(params, "/enrollment");
+    // //console.log(params);
+
+    await axios.post(`/enroll/enroll-student`, params).then((res) => {
+      if (res.status === 200) {
+        toast.success(res?.data?.message || "Data Created successfully");
+        nevigate("/enrollment");
+      } else {
+        toast.error(res?.data?.message || "Failed Data");
+      }
+    });
   };
+
   return (
     <Home>
       <div className="w-[100%] py-3 sm:p-3">
@@ -101,7 +118,7 @@ const CreateEnrollment = () => {
                     {data1?.data &&
                       data1?.data?.map((elm) => {
                         // const { _id, title } = elm.csubcategory;
-                        // console.log(_id, title);
+                        // //console.log(_id, title);
                         return (
                           <>
                             <option value={elm.id}>{elm?.sname}</option>
@@ -128,7 +145,7 @@ const CreateEnrollment = () => {
                     {data?.data &&
                       data?.data?.map((elm) => {
                         // const { _id, title } = elm.csubcategory;
-                        // console.log(_id, title);
+                        // //console.log(_id, title);
 
                         return (
                           <>
@@ -240,7 +257,7 @@ const CreateEnrollment = () => {
                       id="active"
                       name="status"
                       value={1}
-                      checked={params?.status == 1}
+                      checked={params?.status === 1}
                       onChange={handleChange}
                     />
                     Active
@@ -253,7 +270,7 @@ const CreateEnrollment = () => {
                       value={0}
                       name="status"
                       onChange={handleChange}
-                      checked={params?.status == 0}
+                      checked={params?.status === 0}
                     />
                     Inactive
                   </div>
@@ -268,7 +285,7 @@ const CreateEnrollment = () => {
                       id="active"
                       name="paystatus"
                       value={1}
-                      checked={params?.paystatus == 1}
+                      checked={params?.paystatus === 1}
                       onChange={handleChange}
                     />
                     Paid
@@ -281,7 +298,7 @@ const CreateEnrollment = () => {
                       value={0}
                       name="paystatus"
                       onChange={handleChange}
-                      checked={params?.paystatus == 0}
+                      checked={params?.paystatus === 0}
                     />
                     Pending
                   </div>

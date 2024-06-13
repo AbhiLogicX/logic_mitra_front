@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useFetch } from "../../hooks/useFetch";
 import useUpdate from "../../hooks/useUpdate";
 import swal from "sweetalert";
@@ -48,7 +48,7 @@ function EditCourses() {
   // Uses a custom hook (useUpdate) for handling the update API call
   const [handleUpdate] = useUpdate(`/courses/update-course`);
 
-  // console.log(formData.ctitle)
+  // //console.log(formData.ctitle)
   //create a function to handle submit
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -59,10 +59,10 @@ function EditCourses() {
 
     // Calls the handleUpdate function from the custom hook
     handleUpdate(`courseId=${e.target.id}`, formData, CourseUrl);
-    // console.log("form submitted", formData);
+    // //console.log("form submitted", formData);
   };
 
-  console.log(formData);
+  //console.log(formData);
   return (
     <>
       <Home>
@@ -174,7 +174,7 @@ function EditCourses() {
                       />
                     </div>
 
-                    <div className="coll-12 col-sm-4">
+                    {/* <div className="coll-12 col-sm-4">
                       <label
                         className="text-white"
                         htmlFor="exampleInputUsername1"
@@ -188,7 +188,7 @@ function EditCourses() {
                         placeholder="Course Duration"
                         onChange={handleChange}
                       />
-                    </div>
+                    </div> */}
                     <div className="coll-12 col-sm-4">
                       <label
                         className="text-white"
@@ -265,12 +265,14 @@ function EditCourses() {
                   >
                     Update
                   </button>
-                  <button
-                    type="reset"
-                    className="rounded-md py-2 Cancel-btn px-4"
-                  >
-                    Cancel
-                  </button>
+                  <Link to={"/courses"}>
+                    <button
+                      type="reset"
+                      className="rounded-md py-2 Cancel-btn px-4"
+                    >
+                      Cancel
+                    </button>
+                  </Link>
                 </div>
               </form>
             </div>

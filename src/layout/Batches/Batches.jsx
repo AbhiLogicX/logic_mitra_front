@@ -1,18 +1,20 @@
 import React from "react";
 import { useFetch } from "../../hooks/useFetch";
 import { Link } from "react-router-dom";
-import { useDeleteOne } from "../../hooks/useDeleteOne";
-import BatchesDetails from "./BatchesDetails";
+import { useDelete } from "../../hooks/useDelete";
+// import BatchesDetails from "./BatchesDetails";
 import Home from "../../Home";
 
 const Batches = () => {
-  const [data, error, loading] = useFetch(`/batches/list`);
-  const { Delete } = useDeleteOne(`/batches/delete-batch?batchId=`);
+  const [data, error, loading, setReload] = useFetch(`/batches/list`);
+  const [Delete] = useDelete(`/batches/delete-batch?batchId=`);
   const handleDelete = async (e) => {
-    console.log("cate id is ", e.target.id);
-    Delete(e.target.id, "/batches");
+    //console.log("cate id is ", e.target.id);
+    Delete(e.target.id, setReload);
   };
-  console.log(data);
+
+  //console.log(data);
+
   return (
     <>
       <Home>
@@ -142,12 +144,11 @@ const Batches = () => {
                                 <td> {item?.btime}</td>
                                 <td> {item?.bseats}</td>
                                 <td>
-                                  {" "}
-                                  {item.bstatus == 0
+                                  {item.bstatus === 0
                                     ? "Upcoming"
-                                    : item.bstatus == 1
+                                    : item.bstatus === 1
                                     ? "runing"
-                                    : item.bstatus == 2
+                                    : item.bstatus === 2
                                     ? "completed"
                                     : "cancelled"}
                                 </td>

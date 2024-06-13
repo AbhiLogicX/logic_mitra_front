@@ -12,23 +12,26 @@ import Home from "../../Home";
 function Subscription() {
   const SubScriptionUrl = "/subscription";
   const navigate = useNavigate();
+  const [fetchedData, setFetchedData] = useState(false);
+  const [cityDataList, setCityDataList] = useState([]);
+
+  // const [fetchedCategeoryList, setFetchedCategeoryList] = useState(false)
+  const [subCategeoryList, setSubCategeoryList] = useState(null);
 
   const [params, setparams] = useState({
     city: "",
     position: "",
     fees: "",
     status: "1",
+    duration: 0,
+    package: "",
+    category: "",
+    subCategory: "",
   });
-  console.log(
-    params.city,
-    params.position,
-
-    params.fees,
-    params.status
-  );
+  //console.log(params.city, params.position, params.fees, params.status);
   //handle addition of category
   const handleChange = (event) => {
-    console.log(event.target);
+    //console.log(event.target);
     const { name, value, type, files } = event.target;
     setparams({
       ...params,
@@ -36,43 +39,101 @@ function Subscription() {
     });
   };
 
+  const handleChangeDuration = async (e) => {
+    const { name, value } = e.target;
+    params[name] = value;
+  };
+
+  const handleCategeory = async (e) => {
+    setSubCategeoryList(null);
+    const { name, value } = e.target;
+    params[name] = value;
+    await axios
+      .get(`/categories/sub-cat?catg=${value}`)
+      .then((res) => {
+        if (res.status === 200) {
+          //console.log("sub cat ---> res", res);
+          setSubCategeoryList(res.data.data);
+        } else {
+          setSubCategeoryList(null);
+        }
+      })
+      .catch((err) => {
+        setSubCategeoryList(null);
+      });
+    // const [subcatlistdata, err, loadingSubCat, setReload] = useFetch(
+    //   `/categories/sub-cat?catg=${value}`
+    // );
+  };
+
   const [addData] = useAdd(`/subscription/create`);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(params);
+    // //console.log("All Params ---->", params);
 
     // addData(params);
     try {
       const res = await axios.post("/subscription/create", params);
-      console.log(res.data);
+      // //console.log(res.data);
       if (res.status === 200) {
         toast.success(res?.data?.message || "Data Created successfully");
-        navigate(SubScriptionUrl);
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        setReload(false);
       } else {
         toast.error(res?.data?.message || "Failed Data");
       }
     } catch (error) {
-      console.log(error);
+      // //console.log(error);
     }
   };
 
-  console.log(params);
+  // //console.log(params);s
 
   // Fetch category data using a custom hook (useFetch)
-  const [data, error, loading] = useFetch("/subscription/list", true);
+  const [data, error, loading, setReload] = useFetch(
+    "/subscription/list",
+    true
+  );
 
-  console.log(data);
+  const [categeoryList, cateListErr, cateLoading, cateReload] = useFetch(
+    "/categories/list",
+    true
+  );
+
+  // //console.log("cate ----> ", categeoryList);
+
+  // //console.log("---->", data);
 
   // fetch tha city data
-  const [Citydata, error1, loading1] = useFetch("/address/city-list", true);
+  // const [Citydata, error1, loading1, ] = useFetch(
+  //   "/address/city-list",
+  //   true
+  // );
+  useEffect(() => {
+    if (!fetchedData) {
+      fetchCityData();
+    }
+    async function fetchCityData() {
+      await axios
+        .post(`https://countriesnow.space/api/v0.1/countries/cities`, {
+          country: "india",
+        })
+        .then((res) => {
+          if (res) {
+            setCityDataList(res.data.data);
+            setFetchedData(true);
+          }
+        })
+        .catch((err) => {
+          setCityDataList([]);
+          setFetchedData(true);
+        });
+    }
+    async function fetchCategeory() {}
+  });
 
-  console.log(Citydata);
+  // //console.log(Citydata);
 
   return (
     <Home>
@@ -99,7 +160,7 @@ function Subscription() {
                     <thead>
                       <tr className="Thead">
                         <th scope="col">City Name</th>
-                        <th scope="col">Position</th>
+                        <th scope="col">Package</th>
 
                         <th scope="col">Status</th>
                         <th scope="col">amount</th>
@@ -112,11 +173,12 @@ function Subscription() {
                       {data.data.map((item) => (
                         <tr key={item.id} className="Tbody">
                           <td>
-                            {Citydata?.data
+                            {/* {Citydata?.data
                               ?.filter((elm) => elm.id === item?.city)
-                              .map((elm) => elm.title)}
+                              .map((elm) => elm.title)} */}
+                            {item?.city}
                           </td>
-                          <td>{item?.position}</td>
+                          <td>{item?.package}</td>
 
                           <td>{item?.status === 1 ? "Active " : "Inactive"}</td>
                           <td>{item?.fees}</td>
@@ -154,13 +216,58 @@ function Subscription() {
                     value={params?.city}
                   >
                     <option> select city</option>
-                    {Citydata?.data?.map((elm) => {
+                    {cityDataList?.map((elm) => {
                       return (
                         <>
-                          <option value={elm.id}> {elm.title} </option>
+                          <option value={elm}> {elm} </option>
                         </>
                       );
                     })}
+                  </select>
+                </div>
+
+                <div className="">
+                  <p className="text-white">Category</p>
+                  <select
+                    required
+                    className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2"
+                    onChange={handleCategeory}
+                    name="category"
+                  >
+                    {categeoryList?.data?.map((itm) => (
+                      <option value={itm.id}>{itm.title}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {subCategeoryList !== null ? (
+                  <div className="">
+                    <p className="text-white">Sub-Category</p>
+                    <select
+                      required
+                      className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2"
+                      onChange={handleChangeDuration}
+                      name="subCategory"
+                    >
+                      {subCategeoryList?.map((itm) => (
+                        <option value={itm.id}>{itm.title}</option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
+
+                <div className="">
+                  <p className="text-white">Package Name</p>
+                  <select
+                    required
+                    className="form-select input focus-within:bg-none border-none outline-none focus:bg-none my-2"
+                    onChange={handleChangeDuration}
+                    name="package"
+                  >
+                    <option value="">select Package...</option>
+                    <option value="Gold">Gold</option>
+                    <option value="Platinum">Platinum</option>
+                    <option value="Silver">Silver</option>
                   </select>
                 </div>
 
@@ -201,6 +308,17 @@ function Subscription() {
                     name="position"
                     value={params?.position}
                     placeholder="Position"
+                    type="number"
+                    className="form-control input focus-within:bg-none border-none outline-none focus:bg-none my-2"
+                  />
+                </div>
+                <div className="">
+                  <p className="text-white">Duration (in months)</p>
+                  <input
+                    onChange={handleChangeDuration}
+                    required
+                    name="duration"
+                    placeholder="Duration in months"
                     type="number"
                     className="form-control input focus-within:bg-none border-none outline-none focus:bg-none my-2"
                   />
